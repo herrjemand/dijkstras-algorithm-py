@@ -5,8 +5,9 @@
 ##########################################################
 class Vertex():
     def __init__(self, name):
-        self.name     = name
-        self.vertexes = {}
+        self.name          = name
+        self.vertexes      = {}
+        self.min_distances = {}
 
     def connect_vertex(self, vertex, distance, *args, update=False):
         """Connectes two vertexes together"""
@@ -20,11 +21,11 @@ class Vertex():
         if not update:
             vertex.connect_vertex(self, distance, update=True)
 
-    def get_distance(self, name):
-        """Returns vertex specified by name """
-        return self.vertexes[name]['distance']
+    def get_distance(self, vertex):
+        """Returns distance for specified vertex"""
+        return self.vertexes[vertex.name]['distance']
 
-    def get_vertexes(self):
+    def get_distances(self):
         """Returns list of vertexes and their distance"""
         vertexes = {}
         for key in self.vertexes:
@@ -32,6 +33,17 @@ class Vertex():
 
         return vertexes
         
+    def get_minimal_distance(self, vertex):
+        """Returns minimal distance for specified vertex"""
+        return self.min_distances.get(vertex.name, float('inf'))
+
+    def set_minimal_distance(self, vertex, distance):
+        """Sets minimal distance for specified vertex"""
+        self.min_distances[vertex.name] = distance
+
+    def get_minimal_distances(self):
+        """Returns minimal distances"""
+        return self.min_distances
 
     def disconnect_vertexes(self, vertex, *args, update=False):
         """Disconnect two vertexes"""
