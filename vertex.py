@@ -8,6 +8,7 @@ class Vertex():
         self.name          = name
         self.vertexes      = {}
         self.min_distances = {}
+        self.visited       = False
 
     def connect_vertex(self, vertex, distance, *args, update=False):
         """Connectes two vertexes together"""
@@ -66,3 +67,43 @@ class Vertex():
 
     def __repr__(self):
         return self.__str__()
+
+    def find_all_minimal_distances(self):
+        """Finds minimal distance to all points on the graph
+           using Dijkstra's algorithm"""
+        origin = current_vertex = self
+        current_distance = 0
+        while True:
+            closest      = float('inf')
+            closest_next = None
+            finished = True
+
+            for key in current_vertex.vertexes:
+                vertex   = current_vertex.vertexes[key]['vertex']
+
+                if not vertex.visited:
+                    distance = current_vertex.vertexes[key]['distance']
+
+                    if distance < closest:
+                        closest      = distance
+                        closest_next = vertex
+
+                    # print('Min from ', origin.name, ' to ', vertex.name, ' ', current_distance + distance)
+                    if current_distance + distance < origin.get_minimal_distance(vertex):
+                        origin.set_minimal_distance(vertex, current_distance + distance)
+
+                    finished = False
+
+            if finished:
+                break
+
+            current_vertex.visited = True
+            current_distance = origin.get_minimal_distance(closest_next)
+            current_vertex = closest_next
+            # print('Changing to ', closest_next.name)
+
+        return self.get_minimal_distances()
+
+    def find_minimal_distance_to(self, vertex):
+        """Finds minimal distance to the point"""
+        return self.find_all_minimal_distances().get(vertex.name, float('inf'))
